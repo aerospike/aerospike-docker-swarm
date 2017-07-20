@@ -4,7 +4,10 @@ Aerospike cluster template to use with Docker Swarm Mode (Docker v1.12+). This i
 
 # Requirements
 
-* Docker Engine 1.13+ (due to Compose v3.2)
+One of the following due to utilizing Compose 3.2 format:
+
+* Docker Engine 17.04+
+* Docker Compose 1.13+
 
 
 # Usage
