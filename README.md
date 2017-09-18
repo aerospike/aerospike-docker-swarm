@@ -116,4 +116,3 @@ optional arguments:
                         The DNS polling interval in s. Defaults to 60
   -v, --verbose         Print status changes
 ``` 
-
