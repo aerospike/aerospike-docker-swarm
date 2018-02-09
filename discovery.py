@@ -60,7 +60,7 @@ def runCMD(cmd):
 	sys.stdout.write("\n")
 	result = proc.stdout.read()
 	if args.verbose:
-		print "Running command: %s"%cmd
+		print  "%s %s : %s"%(time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()), "Running command", cmd )
 		print result
 	return result
 
@@ -80,13 +80,20 @@ def removeNode(IP,cluster):
 # monitor DNS
 
 parseArgs()
+
+if args.verbose:
+	print  "%s %s : %s"%(time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()), "arguments", args)
+
 lastKnownIPs = []
 while True:
 	try:
 		ips = socket.gethostbyname_ex(args.servicename)[2]
 	except:
 		# connection/resolve error: fast retry
+		if args.verbose:
+			print  "%s %s"%(time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()), "unable to connect, fast retry")
 		time.sleep(1)
+		continue
 	# if no DNS change, sleep
 	if Counter(ips) == Counter(lastKnownIPs):
 		time.sleep(args.interval)
