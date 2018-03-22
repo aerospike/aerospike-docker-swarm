@@ -43,15 +43,20 @@ def parseArgs():
 	parser.add_argument("-i"
 			, "--interval"
 			, dest="interval"
-			, default=60
+			, default=10
 			, type=float
-			, help="The DNS polling interval in s. Defaults to 60")
+			, help="The DNS polling interval in s. Defaults to 10")
 	parser.add_argument("-v"
 			, "--verbose"
 			, dest="verbose"
 			, action="store_true"
 			, help="Print status changes")
-	
+	parser.add_argument("-o"
+			, "--once"
+			, dest="once"
+			, action="store_true"
+			, help="Run only once. Do not poll")
+
 	args = parser.parse_args()
 
 def runCMD(cmd):
@@ -88,13 +93,27 @@ lastKnownIPs = []
 while True:
 	try:
 		ips = socket.gethostbyname_ex(args.servicename)[2]
+	except socket.gaierror as e:
+		print  "%s %s"%(time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()), e[1])
+		if e[0] == -2:
+			# EAI_NONAME/resolve error: may mean cluster is destroyed but discovery is kept running
+			print "DNS cleared, resetting history"
+			lastKnownIPs = []
+			continue
+		else:
+			# any others, retry
+			if args.verbose:
+				print  "%s %s"%(time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()), "unable to connect, fast retry")
+			time.sleep(1)
+			continue
 	except:
-		# connection/resolve error: fast retry
+		# other connection/resolve error: fast retry
 		if args.verbose:
 			print  "%s %s"%(time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()), "unable to connect, fast retry")
 		time.sleep(1)
 		continue
 	# if no DNS change, sleep
+	print "%s %s : %s"%(time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()), "Found IPs:", ips)
 	if Counter(ips) == Counter(lastKnownIPs):
 		time.sleep(args.interval)
 		continue;
@@ -113,4 +132,7 @@ while True:
 	lastKnownIPs = ips
 	if args.verbose:
 		print "%s %s : %s"%(time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()), args.servicename, lastKnownIPs)
+	if args.once:
+		print "%s Info command(s) sent. `--once` flag set. Exiting sucessfully"%(time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()))
+		sys.exit(0)
 	
