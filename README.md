@@ -15,7 +15,7 @@ One of the following due to utilizing Compose 3.2 format:
 ```bash
 docker stack deploy -c <compose yaml> <deployment name>  
 eg:  
-docker stack deploy -c aerospike.yml aerospike  
+docker stack deploy -c aerospike_ce.yml aerospike  
 ```
 
 # Starting from scratch
@@ -47,7 +47,7 @@ docker stack deploy -c aerospike.yml aerospike
 1. Verify your Swarm:  
     `docker@node1 docker node ls`
 1. Clone this repo onto your manager node and deploy:  
-    `docker@node1 docker stack deploy -c aerospike.yml aerospike`
+    `docker@node1 docker stack deploy -c aerospike_ce.yml aerospike`
 
 ## Other actions
 1. Verify your deployment:
@@ -87,6 +87,10 @@ This is done by specifying `address eth0` for each of the following within the n
 * heartbeat
 * fabric
 
+## Apply feature key file for EE edition
+
+Add `feature-key-file` configuration under `service` stanza in aerospike configuration file. The path should point to `/run/secrets/features.conf` in this example (Please check [aerospike_ee.conf](aerospike_ee.conf)).
+
 
 # Details
 
@@ -101,6 +105,10 @@ secrets - Utilize the `conffile` secret.
 
 entrypoint - Overwrite default container entrypoint to run our discovery script instead.
 secrets - Utilize the `discovery` secret.
+
+**Feature Key File (EE licence)**
+
+Copy the features.conf (feature key file) to the current directory (same path as `aerospike_ee.yaml`, `aerospike_ee.conf` and `discovery.py` files), and simply run `docker stack deploy -c aerospike_ee.yml aerospike`
 
 ## discovery.py
 
