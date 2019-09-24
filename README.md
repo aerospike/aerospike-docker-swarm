@@ -15,7 +15,7 @@ One of the following due to utilizing Compose 3.2 format:
 ```bash
 docker stack deploy -c <compose yaml> <deployment name>  
 eg:  
-docker stack deploy -c aerospike_ce.yml aerospike  
+docker stack deploy -c aerospike.yml aerospike
 ```
 
 # Starting from scratch
@@ -47,7 +47,7 @@ docker stack deploy -c aerospike_ce.yml aerospike
 1. Verify your Swarm:  
     `docker@node1 docker node ls`
 1. Clone this repo onto your manager node and deploy:  
-    `docker@node1 docker stack deploy -c aerospike_ce.yml aerospike`
+    `docker@node1 docker stack deploy -c aerospike.yml aerospike`
 
 ## Other actions
 1. Verify your deployment:
@@ -108,7 +108,7 @@ secrets - Utilize the `discovery` secret.
 
 **Feature Key File (EE licence)**
 
-Copy the features.conf (feature key file) to the current directory (same path as `aerospike_ee.yaml`, `aerospike_ee.conf` and `discovery.py` files), and simply run `docker stack deploy -c aerospike_ee.yml aerospike`
+Copy the features.conf (feature key file) to the current directory (same path as `aerospike_ee.yml`, `aerospike_ee.conf` and `discovery.py` files), and simply run `docker stack deploy -c aerospike_ee.yml aerospike`
 
 ## discovery.py
 
