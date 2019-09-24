@@ -1,0 +1,51 @@
+version: '3.7'
+
+services:
+    aerospikedb:
+        image: aerospike/aerospike-server-enterprise:latest
+        networks:
+        - aerospikenetwork
+        deploy:
+            replicas: 3
+            endpoint_mode: dnsrr
+        labels:
+            com.aerospike.description: "This label is for all containers for the Aerospike service"
+        command: [ "--config-file","/run/secrets/aerospike_ee.conf"]
+        secrets:
+        - source: conffile
+          target: aerospike_ee.conf
+          mode: 0440
+        - source: featurekeyfile
+          target: features.conf
+          mode: 0440
+
+    meshworker:
+       image: aerospike/aerospike-tools:latest
+       networks:
+       - aerospikenetwork
+       depends_on:
+       - aerospike
+       entrypoint:
+       - /run/secrets/discovery
+       - "--servicename"
+       - aerospikedb
+       - "-i"
+       - "5"
+       - "-v"
+       secrets:
+       - source: discoveryfile
+         target: discovery
+         mode: 0750
+
+networks:
+    aerospikenetwork:
+        driver: overlay
+        attachable: true
+
+secrets:
+    conffile:
+        file: ./aerospike_ee.conf
+    discoveryfile:
+        file: ./discovery.py
+    featurekeyfile:
+        file: ./features.conf

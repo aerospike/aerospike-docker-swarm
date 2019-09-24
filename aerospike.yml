@@ -1,4 +1,4 @@
-version: '3.2'
+version: '3.7'
 
 services:
     aerospikedb:
@@ -6,7 +6,7 @@ services:
         networks:
         - aerospikenetwork
         deploy:
-            replicas: 2
+            replicas: 3
             endpoint_mode: dnsrr
         labels:
             com.aerospike.description: "This label is for all containers for the Aerospike service"
@@ -17,7 +17,7 @@ services:
           mode: 0440
     
     meshworker:
-        image: aerospike/aerospike-tools:3.15.0.3
+        image: aerospike/aerospike-tools:latest
         networks:
         - aerospikenetwork
         depends_on:
